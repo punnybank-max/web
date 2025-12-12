@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Your Name — Short one-page site</title>
+  <meta name="description" content="A simple single-page site. Replace this text with your short bio or site purpose." />
+
+  <!-- Open Graph / Social -->
+  <meta property="og:title" content="Your Name — Short one-page site" />
+  <meta property="og:description" content="A simple single-page site. Replace this text with your short bio or site purpose." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://yourdomain.com/" />
+  <meta property="og:image" content="https://yourdomain.com/og-image.png" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Your Name — Short one-page site" />
+  <meta name="twitter:description" content="A simple single-page site. Replace this text with your short bio or site purpose." />
+  <meta name="twitter:image" content="https://yourdomain.com/og-image.png" />
+
+  <!-- Fallback favicon -->
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+  <style>
+    :root {
+      --max-width: 860px;
+      --accent: #0b84ff;
+      --bg: #0f1720;
+      --card: #0b1220;
+      --muted: #9aa4b2;
+      --radius: 14px;
+      color-scheme: dark;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #071021 0%, #0b1420 100%);
+      color:#eaf3ff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .container{
+      width:100%;
+      max-width:var(--max-width);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--radius);
+      padding:36px;
+      box-shadow: 0 6px 30px rgba(2,6,23,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
+      display:grid;
+      grid-template-columns: 1fr 320px;
+      gap:28px;
+      align-items:start;
+    }
+
+    @media (max-width:880px){
+      .container{grid-template-columns:1fr;padding:22px}
+    }
+
+    main h1{
+      margin:0 0 8px 0;
+      font-size:28px;
+      letter-spacing:-0.02em;
+    }
+    .role{
+      color:var(--accent);
+      font-weight:600;
+      margin-bottom:14px;
+      display:inline-block;
+    }
+    p.lead{margin:0 0 18px 0;color:var(--muted);line-height:1.5}
+
+    .links{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:10px;
+      background:rgba(255,255,255,0.02);
+      color:inherit;
+      text-decoration:none;
+      font-weight:600;
+      transition:transform .12s ease, background .12s ease;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+    .btn:hover{transform:translateY(-3px); background:rgba(255,255,255,0.03)}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.04); color:var(--muted); font-weight:600}
+
+    aside{
+      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+      border-radius:12px;
+      padding:18px;
+      border: 1px solid rgba(255,255,255,0.02);
+    }
+
+    .avatar{
+      width:100%;
+      height:160px;
+      border-radius:8px;
+      background:linear-gradient(135deg,var(--accent),#7c6cff);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      font-size:38px;
+      color:#031024;
+      margin-bottom:14px;
+    }
+
+    .meta{color:var(--muted);font-size:14px;margin-bottom:10px}
+    .small{font-size:13px;color:var(--muted)}
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+
+    /* small helpful focus styles */
+    a:focus{outline:3px solid rgba(11,132,255,0.18); outline-offset:3px}
+  </style>
+</head>
+<body>
+  <div class="container" role="main">
+    <main>
+      <div class="role">Short description or tagline</div>
+      <h1>Your Name</h1>
+      <p class="lead">A concise sentence describing what you do, who you help, or what this page links to. Replace this paragraph with your short bio, services, or a call to action.</p>
+
+      <div class="links" aria-label="important links">
+        <a class="btn" href="https://example.com/resume.pdf" target="_blank" rel="noopener noreferrer">Resume / CV</a>
+        <a class="btn secondary" href="mailto:you@example.com">Email</a>
+        <a class="btn" href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a class="btn" href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      </div>
+
+      <section style="margin-top:26px">
+        <h2 style="font-size:16px;margin:0 0 8px 0">What I do</h2>
+        <p class="small">Short bullets or links to projects. Example: build tiny web tools, write about product design, or accept freelance work. Keep each item one short sentence.</p>
+      </section>
+
+      <footer>
+        <div class="small">Built with <strong>Cloudflare Pages</strong>. Hosted from GitHub — update this repo and changes deploy automatically.</div>
+      </footer>
+    </main>
+
+    <aside aria-label="contact info">
+      <div class="avatar">YN</div>
+      <div class="meta"><strong>Location</strong><div class="small">Your city • Timezone</div></div>
+      <div class="meta"><strong>Contact</strong><div class="small">you@example.com</div></div>
+      <div class="meta"><strong>Quick links</strong>
+        <div class="small" style="margin-top:8px">
+          • <a href="https://yourdomain.com" style="color:inherit;text-decoration:underline">yourdomain.com</a><br>
+          • <a href="https://twitter.com/yourprofile" style="color:inherit;text-decoration:underline">twitter</a>
+        </div>
+      </div>
+    </aside>
+  </div>
+</body>
+</html>
