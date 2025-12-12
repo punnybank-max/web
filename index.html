@@ -1,163 +1,470 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Your Name — Short one-page site</title>
-  <meta name="description" content="A simple single-page site. Replace this text with your short bio or site purpose." />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Super Horde – Lembundut Studios</title>
 
-  <!-- Open Graph / Social -->
-  <meta property="og:title" content="Your Name — Short one-page site" />
-  <meta property="og:description" content="A simple single-page site. Replace this text with your short bio or site purpose." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://yourdomain.com/" />
-  <meta property="og:image" content="https://yourdomain.com/og-image.png" />
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Your Name — Short one-page site" />
-  <meta name="twitter:description" content="A simple single-page site. Replace this text with your short bio or site purpose." />
-  <meta name="twitter:image" content="https://yourdomain.com/og-image.png" />
-
-  <!-- Fallback favicon -->
-  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-
-  <style>
-    :root {
-      --max-width: 860px;
-      --accent: #0b84ff;
-      --bg: #0f1720;
-      --card: #0b1220;
-      --muted: #9aa4b2;
-      --radius: 14px;
-      color-scheme: dark;
+<style>
+    :root{
+        --accent:#6cd06c;
+        --accent-dark:#4da84d;
+        --panel:#ffffffcc;
+        --text:#143b00;
     }
-    *{box-sizing:border-box}
+
     html,body{height:100%}
-    body{
-      margin:0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg, #071021 0%, #0b1420 100%);
-      color:#eaf3ff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:32px;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+    body {
+        margin: 0;
+        font-family: "Verdana", sans-serif;
+        background: linear-gradient(#7fd9ff 0%, #aef3ff 40%, #8ff87d 100%); /* single consistent background (v1) */
+        background-attachment: fixed; /* ensure one fixed background across the page */
+        overflow-x: hidden;
+        color: #222;
+        position: relative;
     }
 
-    .container{
-      width:100%;
-      max-width:var(--max-width);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:var(--radius);
-      padding:36px;
-      box-shadow: 0 6px 30px rgba(2,6,23,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
-      display:grid;
-      grid-template-columns: 1fr 320px;
-      gap:28px;
-      align-items:start;
+    /* ─── Clouds: start offscreen left and drift across ───────────────── */
+    .cloud {
+        position: absolute;
+        left: -340px; /* start off-screen left so movement is visible */
+        width: 180px;
+        height: 60px;
+        background: #ffffff;
+        opacity: 0.92;
+        border-radius: 50px;
+        filter: blur(1px);
+        will-change: transform;
+        animation-name: cloudMove;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
+    .cloud::before,
+    .cloud::after {
+        content: "";
+        position: absolute;
+        background: #ffffff;
+        opacity: 0.92;
+        filter: blur(1px);
+        border-radius: 50px;
+    }
+    .cloud::before { width: 120px; height: 60px; top: -20px; left: 20px; }
+    .cloud::after  { width: 100px; height: 50px; top: 10px; left: 80px; }
+
+    @keyframes cloudMove {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(140vw); }
     }
 
-    @media (max-width:880px){
-      .container{grid-template-columns:1fr;padding:22px}
+    /* layer variants for depth */
+    .c1 { top: 60px; animation-duration: 48s; opacity: 0.95; transform: scale(1.05); }
+    .c2 { top: 120px; animation-duration: 72s; opacity: 0.85; transform: scale(0.9); }
+    .c3 { top: 30px; animation-duration: 36s; opacity: 0.9; transform: scale(1.15); }
+
+    /* ─── Tightened layout (closer spacing) ───────────────────────── */
+    .hero {
+        padding: 80px 18px 28px; /* reduced from v1 to bring things closer */
+        text-align: center;
+        position: relative;
     }
 
-    main h1{
-      margin:0 0 8px 0;
-      font-size:28px;
-      letter-spacing:-0.02em;
-    }
-    .role{
-      color:var(--accent);
-      font-weight:600;
-      margin-bottom:14px;
-      display:inline-block;
-    }
-    p.lead{margin:0 0 18px 0;color:var(--muted);line-height:1.5}
-
-    .links{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:10px 14px;
-      border-radius:10px;
-      background:rgba(255,255,255,0.02);
-      color:inherit;
-      text-decoration:none;
-      font-weight:600;
-      transition:transform .12s ease, background .12s ease;
-      border: 1px solid rgba(255,255,255,0.03);
-    }
-    .btn:hover{transform:translateY(-3px); background:rgba(255,255,255,0.03)}
-    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.04); color:var(--muted); font-weight:600}
-
-    aside{
-      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-      border-radius:12px;
-      padding:18px;
-      border: 1px solid rgba(255,255,255,0.02);
+    .title {
+        font-size: 3.6rem;
+        font-weight: 700;
+        color: var(--text);
+        text-shadow: 3px 3px 0 #b2ffb2;
+        margin: 0;
+        line-height: 1;
     }
 
-    .avatar{
-      width:100%;
-      height:160px;
-      border-radius:8px;
-      background:linear-gradient(135deg,var(--accent),#7c6cff);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:700;
-      font-size:38px;
-      color:#031024;
-      margin-bottom:14px;
+    .studio {
+        font-size: 1.1rem;
+        margin-top: 6px;
+        color: #245600;
+        opacity: 0.85;
     }
 
-    .meta{color:var(--muted);font-size:14px;margin-bottom:10px}
-    .small{font-size:13px;color:var(--muted)}
-    footer{margin-top:18px;color:var(--muted);font-size:13px}
+    /* Follow buttons moved above (directly after titles) */
+    .socialRow {
+        display: inline-flex;
+        justify-content: center;
+        gap: 18px;
+        margin: 8px auto 12px;
+        flex-wrap: wrap;
+    }
 
-    /* small helpful focus styles */
-    a:focus{outline:3px solid rgba(11,132,255,0.18); outline-offset:3px}
-  </style>
+    .socialRow a {
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 14px;
+        background: var(--panel);
+        border-radius: 10px;
+        border: 2px solid #c8ffc8;
+        box-shadow: 0 3px 0 #74cc74;
+        color: #113200;
+        font-size: 0.98rem;
+        transition: transform .12s;
+    }
+
+    .socialRow a:hover { transform: translateY(-2px); }
+    .socialRow img, .socialRow svg { width: 20px; height: 20px; display:block; }
+
+    /* ─── Pixel "character" (kept smaller and closer) ───────────────── */
+    .pixelHorde {
+        width: 110px;
+        height: 110px;
+        margin: 18px auto 14px;
+        image-rendering: pixelated;
+        background: repeating-linear-gradient(
+            90deg,
+            #3b3b3b 0 10px,
+            #222 10px 20px
+        );
+        animation: hordeWalk 1s steps(4) infinite;
+        border-radius: 6px;
+    }
+    @keyframes hordeWalk {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(4px); }
+        100% { transform: translateY(0); }
+    }
+
+    @keyframes floatY {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        50% { transform: translateY(-10px) rotate(6deg); opacity: 0.95; }
+        100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    }
+
+    .desc {
+        max-width: 760px;
+        margin: 10px auto 18px;
+        font-size: 1.18rem;
+        line-height: 1.55;
+    }
+
+    .section {
+        padding: 30px 20px;
+        max-width: 920px;
+        margin: 0 auto;
+    }
+
+    h2 {
+        color: #1f4500;
+        font-size: 2rem;
+        margin: 8px 0 12px;
+        text-shadow: 2px 2px 0 #b0ffb0;
+    }
+
+    .card {
+        background: #ffffffaa;
+        backdrop-filter: blur(2px);
+        padding: 18px 20px;
+        margin: 14px 0;
+        border-radius: 12px;
+        border: 2px solid #c8ffc8;
+        box-shadow: 0 3px 0 #74cc74;
+        font-size: 1.06rem;
+        line-height: 1.45;
+    }
+
+    /* ─── Screenshots: grid style with left/right buttons and auto-preview ───────────────── */
+    .shots {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        margin-top: 14px;
+        position: relative;
+        align-items: center;
+    }
+
+    .shotBox {
+        background: repeating-linear-gradient(
+            45deg,
+            #d4ffd4 0 10px,
+            #b4ffb4 10px 20px
+        );
+        border: 2px solid #6cd06c;
+        border-radius: 12px;
+        height: 150px;
+        box-shadow: 0 3px 0 #4da84d;
+        transition: transform .22s ease, box-shadow .22s ease, border-color .22s;
+        background-size: cover;
+        background-position: center;
+    }
+
+    /* highlighted/previewed shot */
+    .shotBox.highlight {
+        transform: translateY(-6px) scale(1.03);
+        box-shadow: 0 10px 0 rgba(77,168,77,0.95);
+        border-color: #3cbf3c;
+    }
+
+    /* overlay arrow controls (left/right) */
+    .shots .arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.95);
+        border: 1px solid #c8ffc8;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        cursor:pointer;
+        box-shadow: 0 2px 0 var(--accent-dark);
+        z-index: 6;
+    }
+    .shots .arrow.left { left: -8px; }
+    .shots .arrow.right { right: -8px; }
+    .shots .arrow svg { width: 18px; height: 18px; color: #115000; }
+
+    /* Emoji attached to a cloud: positioned relative to its parent cloud and gently bobs */
+    .cloud .cloud-emoji {
+        position: absolute;
+        left: 10px;
+        top: -14px;
+        font-size: 22px;
+        will-change: transform, opacity;
+        opacity: 0.95;
+        filter: drop-shadow(0 2px 0 rgba(0,0,0,0.08));
+        z-index: 7;
+        pointer-events: none;
+        animation: floatY 4s ease-in-out infinite;
+    }
+    .cloud .cloud-emoji.big { font-size: 34px; }
+
+    /* Footer */
+    .footer {
+        text-align: center;
+        padding: 30px;
+        font-size: 0.9rem;
+        opacity: 0.75;
+    }
+
+    /* reduced motion respects user preferences */
+    @media (prefers-reduced-motion: reduce) {
+        .cloud, .pixelHorde, .cloud-emoji, .shotBox { animation: none !important; transition: none !important; }
+    }
+
+    @media (max-width:560px){
+        .title { font-size:2.4rem; }
+        .shotBox{height:120px}
+        .cloud-emoji{display:none} /* hide moving emoji on very small screens to avoid clutter */
+    }
+</style>
 </head>
+
+
 <body>
-  <div class="container" role="main">
+
+    <!-- Cloud emojis are generated dynamically and attached to each cloud -->
+
+    <!-- Clouds: layered with offsets and delays -->
+    <div class="cloud c1" style="animation-delay:0s;"></div>
+    <div class="cloud c2" style="animation-delay:8s;"></div>
+    <div class="cloud c3" style="animation-delay:14s;"></div>
+    <div class="cloud c2" style="animation-delay:22s; top:150px; transform: scale(.85);"></div>
+    <div class="cloud c1" style="animation-delay:4s; top:95px; transform: scale(1.05);"></div>
+
+    <script>
+    /* Generate randomized clouds and attach fantasy emojis to them */
+    (function(){
+        function rand(min,max){ return Math.random()*(max-min)+min; }
+        const fantasy = ['✨','🏰','🐉','🧙‍♀️','🛡️','⚔️','👑','🔥','🌿','🗡️','🦄','🧝'];
+
+        // Remove any existing static clouds so we can regenerate
+        document.querySelectorAll('.cloud').forEach(c=>c.remove());
+
+        const cloudCount = Math.floor(rand(4,7));
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        for(let i=0;i<cloudCount;i++){
+            const depthIdx = Math.floor(rand(0,3));
+            const cls = ['c1','c2','c3'][depthIdx];
+            const el = document.createElement('div');
+            el.className = 'cloud ' + cls;
+
+            // Position & sizing
+            el.style.top = Math.floor(rand(10,180)) + 'px';
+            el.style.width = Math.floor(rand(120,260)) + 'px';
+            el.style.height = Math.floor(rand(40,80)) + 'px';
+            el.style.opacity = (0.78 + Math.random()*0.22).toFixed(2);
+            el.style.transform = 'scale(' + (rand(0.85,1.15)).toFixed(2) + ')';
+
+            // Animation timing (vary per depth). Start with a negative delay
+            // so clouds are already partway across the screen on load.
+            const baseDur = cls === 'c1' ? 48 : cls === 'c2' ? 72 : 36;
+            const dur = baseDur + rand(-12,12);
+            el.style.animationDuration = dur.toFixed(2) + 's';
+            // negative delay makes the animation appear already in progress
+            const initialProgress = rand(0, Math.max(0.5, dur));
+            el.style.animationDelay = (-initialProgress).toFixed(2) + 's';
+
+            // Attach a fantasy emoji to most clouds (bobs with the cloud)
+            if(!prefersReduced && Math.random() < 0.9){
+                const em = document.createElement('div');
+                em.className = 'cloud-emoji';
+                if(Math.random() < 0.18) em.classList.add('big');
+                em.textContent = fantasy[Math.floor(rand(0,fantasy.length))];
+                em.style.left = Math.floor(rand(6,34)) + 'px';
+                em.style.top = Math.floor(rand(-30,-6)) + 'px';
+                em.style.animationDuration = (3 + rand(0,3)).toFixed(2) + 's';
+                el.appendChild(em);
+            }
+
+            document.body.appendChild(el);
+        }
+    })();
+    </script>
+
+    <!-- Hero -->
+    <header class="hero" role="banner">
+        <div class="title">Super Horde</div>
+        <div class="studio">by Lembundut Studios</div>
+
+        <!-- Follow buttons moved here (above other content, after titles) -->
+        <div class="socialRow" aria-label="Follow and wishlist links">
+            <a href="https://fake-steam.com/superhorde" target="_blank" rel="noopener">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg" alt="Steam icon" />
+                Steam
+            </a>
+
+            <a href="https://youtube.com/fake-superhorde" target="_blank" rel="noopener">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" alt="YouTube icon" />
+                YouTube
+            </a>
+
+            <!-- Inline X SVG so the logo reliably appears -->
+            <a href="https://x.com/fake-superhorde" target="_blank" rel="noopener" aria-label="X (Twitter)">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" role="img">
+                    <rect width="24" height="24" fill="none"></rect>
+                    <path fill="#000" d="M21.6 7.2c-.3.2-.7.3-1 .2.4-.3.6-.8.7-1.2-.4.2-.9.4-1.3.5-.4-.4-1-1-1.9-1-1.4 0-2.4 1.3-2.4 2.8 0 .2 0 .5.1.7-2 .0-3.8-1.1-5-2.7-.2.4-.3.8-.3 1.3 0 .9.4 1.8 1 2.3-.3 0-.6-.1-.9-.2v.0c0 1.4 1 2.8 2.6 3.1-.3.1-.6.1-.9.1-.2 0-.4 0-.6-.1.4 1.2 1.6 2 3.1 2-1.1.8-2.4 1.2-3.9 1.2-.3 0-.6 0-.9-.1 1.4.9 3.1 1.4 4.9 1.4 5.9 0 9.2-4.9 9.2-9.2v-.4c.7-.5 1.3-1.1 1.7-1.8-.6.3-1.3.5-1.9.6z"/>
+                </svg>
+                X
+            </a>
+        </div>
+
+        <div class="pixelHorde" aria-hidden="true"></div>
+
+        <div class="desc">
+            A fast-paced 2D pixel-art rogue-like kingdom builder where you command massive armies
+            and challenge ever-growing AI empires across a high-fantasy world.
+        </div>
+    </header>
+
+    <!-- About -->
     <main>
-      <div class="role">Short description or tagline</div>
-      <h1>Your Name</h1>
-      <p class="lead">A concise sentence describing what you do, who you help, or what this page links to. Replace this paragraph with your short bio, services, or a call to action.</p>
+    <section class="section" aria-labelledby="about-heading">
+        <h2 id="about-heading">About the Game</h2>
+        <div class="card">
+            Super Horde blends rogue-like chaos with large-scale strategy. Rise as a newborn monarch,
+            gather heroes, forge alliances, face ancient beasts, and expand your dominion through
+            rolling grasslands, deep forests, frozen ruins, and floating sky-isles.
+        </div>
+    </section>
 
-      <div class="links" aria-label="important links">
-        <a class="btn" href="https://example.com/resume.pdf" target="_blank" rel="noopener noreferrer">Resume / CV</a>
-        <a class="btn secondary" href="mailto:you@example.com">Email</a>
-        <a class="btn" href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a class="btn" href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-      </div>
+    <!-- Game Modes -->
+    <section class="section" aria-labelledby="modes-heading">
+        <h2 id="modes-heading">Game Modes</h2>
+        <div class="card"><strong>Campaign:</strong> Follow a branching high-fantasy story, defeat rival kingdoms, and uncover forgotten secrets.</div>
+        <div class="card"><strong>Rogue-like Kingdom Runs:</strong> Every attempt reshapes the map with random upgrades, new enemy types, and unpredictable challenges.</div>
+        <div class="card"><strong>AI Conquest:</strong> Massive auto-battles against evolving AI empires that rebuild, counter your army, and attack your borders.</div>
+    </section>
 
-      <section style="margin-top:26px">
-        <h2 style="font-size:16px;margin:0 0 8px 0">What I do</h2>
-        <p class="small">Short bullets or links to projects. Example: build tiny web tools, write about product design, or accept freelance work. Keep each item one short sentence.</p>
-      </section>
+    <!-- Screenshots (original grid style, but with left/right buttons and auto-preview) -->
+    <section class="section" aria-labelledby="screens-heading">
+        <h2 id="screens-heading">Preview Screenshots</h2>
 
-      <footer>
-        <div class="small">Built with <strong>Cloudflare Pages</strong>. Hosted from GitHub — update this repo and changes deploy automatically.</div>
-      </footer>
+        <div class="shots" id="shotsContainer">
+            <button class="arrow left" id="prevShot" aria-label="Previous screenshot" title="Previous">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+
+            <!-- three visible shot boxes (v1 grid style) -->
+            <div class="shotBox" data-index="0" style="background-image: linear-gradient(180deg,#ffe7d4,#ffd4b4);"></div>
+            <div class="shotBox" data-index="1" style="background-image: linear-gradient(180deg,#e8f5ff,#cfe9ff);"></div>
+            <div class="shotBox" data-index="2" style="background-image: linear-gradient(180deg,#f7ffe8,#dcffcf);"></div>
+
+            <button class="arrow right" id="nextShot" aria-label="Next screenshot" title="Next">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 6l6 6-6 6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- Follow & Wishlist (small card copy for discoverability) -->
+    <section class="section" aria-labelledby="follow-heading">
+        <h2 id="follow-heading">Follow & Wishlist</h2>
+        <div class="card" style="display:flex;align-items:center;gap:10px;justify-content:center;">
+            Follow us for updates: <strong>@Lembundut</strong>
+        </div>
+    </section>
     </main>
 
-    <aside aria-label="contact info">
-      <div class="avatar">YN</div>
-      <div class="meta"><strong>Location</strong><div class="small">Your city • Timezone</div></div>
-      <div class="meta"><strong>Contact</strong><div class="small">you@example.com</div></div>
-      <div class="meta"><strong>Quick links</strong>
-        <div class="small" style="margin-top:8px">
-          • <a href="https://yourdomain.com" style="color:inherit;text-decoration:underline">yourdomain.com</a><br>
-          • <a href="https://twitter.com/yourprofile" style="color:inherit;text-decoration:underline">twitter</a>
-        </div>
-      </div>
-    </aside>
-  </div>
+    <footer class="footer">
+        © Lembundut Studios • Super Horde
+    </footer>
+
+<script>
+/* -------------------------
+   Shots grid auto-advance & manual controls (old grid style with preview highlight)
+   ------------------------- */
+(function(){
+    const boxes = Array.from(document.querySelectorAll('.shotBox'));
+    const prevBtn = document.getElementById('prevShot');
+    const nextBtn = document.getElementById('nextShot');
+    const container = document.getElementById('shotsContainer');
+    let idx = 0;
+    const total = boxes.length;
+    const INTERVAL_MS = 3500;
+    let timer = null;
+
+    function setHighlight(i){
+        idx = (i + total) % total;
+        boxes.forEach((b, j) => b.classList.toggle('highlight', j === idx));
+    }
+
+    function next(){ setHighlight(idx + 1); }
+    function prev(){ setHighlight(idx - 1); }
+
+    nextBtn.addEventListener('click', ()=> { next(); resetTimer(); });
+    prevBtn.addEventListener('click', ()=> { prev(); resetTimer(); });
+
+    function startTimer(){
+        stopTimer();
+        timer = setInterval(()=> next(), INTERVAL_MS);
+    }
+    function stopTimer(){ if(timer){ clearInterval(timer); timer = null; } }
+    function resetTimer(){ startTimer(); }
+
+    container.addEventListener('mouseenter', ()=> stopTimer());
+    container.addEventListener('mouseleave', ()=> startTimer());
+
+    setHighlight(0);
+    startTimer();
+
+    // Respect prefers-reduced-motion: don't auto-advance if user prefers reduced motion
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if(mq.matches) stopTimer();
+})();
+
+/* Clouds and cloud-attached fantasy emojis are generated dynamically above. */
+
+/* -------------------------
+   Accessibility: if prefers-reduced-motion, disable animations via inline styles (extra safety)
+   ------------------------- */
+(function(){
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if(mq.matches){
+        document.querySelectorAll('.cloud, .pixelHorde, .cloud-emoji, .shotBox').forEach(el=>{
+            el.style.animation = 'none';
+            el.style.transition = 'none';
+        });
+    }
+})();
+</script>
 </body>
 </html>
