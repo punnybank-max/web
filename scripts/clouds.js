@@ -1,7 +1,7 @@
-/* Generate randomized clouds and attach fantasy emojis to them */
+/* Generate randomized clouds (no emojis) */
 (function(){
     function rand(min,max){ return Math.random()*(max-min)+min; }
-    const fantasy = ['✨','🏰','🐉','🧙‍♀️','🛡️','⚔️','👑','🔥','🌿','🗡️','🦄','🧝'];
+    // emoji set removed — not used
 
     // Remove any existing static clouds so we can regenerate
     document.querySelectorAll('.cloud').forEach(c=>c.remove());
@@ -16,7 +16,7 @@
         el.className = 'cloud ' + cls;
 
         // Position & sizing
-        el.style.top = Math.floor(rand(10,180)) + 'px';
+        el.style.top = Math.floor(rand(140,360)) + 'px';
         el.style.width = Math.floor(rand(120,260)) + 'px';
         el.style.height = Math.floor(rand(40,80)) + 'px';
         el.style.opacity = (0.78 + Math.random()*0.22).toFixed(2);
@@ -31,17 +31,7 @@
         const initialProgress = rand(0, Math.max(0.5, dur));
         el.style.animationDelay = (-initialProgress).toFixed(2) + 's';
 
-        // Attach a fantasy emoji to most clouds (bobs with the cloud)
-        if(!prefersReduced && Math.random() < 0.9){
-            const em = document.createElement('div');
-            em.className = 'cloud-emoji';
-            if(Math.random() < 0.18) em.classList.add('big');
-            em.textContent = fantasy[Math.floor(rand(0,fantasy.length))];
-            em.style.left = Math.floor(rand(6,34)) + 'px';
-            em.style.top = Math.floor(rand(-30,-6)) + 'px';
-            em.style.animationDuration = (3 + rand(0,3)).toFixed(2) + 's';
-            el.appendChild(em);
-        }
+        // Emoji generation removed — clouds are visual only
 
         document.body.appendChild(el);
     }

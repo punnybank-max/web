@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capybara Games — Structural Layout Clone</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Inter:wght@300;400;700&family=Press+Start+2P&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --white:#ffffff;
+      --dark:#0b132b;
+      --cyan:#1fe0e6;
+      --muted:#6b7280;
+      --ease:cubic-bezier(.4,0,.2,1);
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{overflow-x:hidden}
+    body{
+      font-family:Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background:#fff;
+      color:#111;
+      line-height:1.45;
+    }
+
+    a{color:inherit;text-decoration:none}
+
+    /* TOP BAR */
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:18px 32px;
+      background:#fff;
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+
+    .logo{
+      font-weight:800;
+      font-size:20px;
+      color:var(--cyan);
+    }
+
+    .menu{
+      display:flex;
+      gap:22px;
+      font-weight:700;
+      font-size:13px;
+      letter-spacing:.04em;
+    }
+
+    /* SECTION 1 – INTRO */
+    .intro{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      padding:120px 80px 140px;
+      background: linear-gradient(#7fd9ff 0%, #aef3ff 40%, #ffffff 90%);
+      position:relative;
+      overflow:visible;
+    }
+
+    /* Make sure intro content stacks above decorative clouds */
+    .intro > div{position:relative; z-index:1}
+
+    .intro h1{
+      font-family:'Press Start 2P', 'Luckiest Guy', Inter, system-ui, -apple-system, sans-serif;
+      font-size:3.6rem;
+      margin:0 0 18px;
+      line-height:1.1;
+    }
+
+    /* clouds (index.js style) */
+    .cloud {
+        position: absolute;
+        left: -340px;
+        width: 220px;
+        height: 72px;
+        background: #ffffff;
+        opacity: 0.9;
+        border-radius: 50px;
+        filter: blur(1px);
+        will-change: transform;
+        animation-name: cloudMove;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      z-index:0;
+      pointer-events:none;
+    }
+    .cloud::before,
+    .cloud::after {
+        content: "";
+        position: absolute;
+        background: #ffffff;
+        opacity: 0.95;
+        filter: blur(1px);
+        border-radius: 50px;
+    }
+    .cloud::before { width: 120px; height: 60px; top: -20px; left: 20px; }
+    .cloud::after  { width: 100px; height: 50px; top: 10px; left: 80px; }
+
+    @keyframes cloudMove {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(140vw); }
+    }
+    .c1 { top: 140px; animation-duration: 48s; opacity: 0.95; transform: scale(1.05); }
+    .c2 { top: 200px; animation-duration: 72s; opacity: 0.85; transform: scale(0.9); }
+    .c3 { top: 130px; animation-duration: 36s; opacity: 0.9; transform: scale(1.15); }
+
+    /* Intro paragraph font to match the index's body style */
+    .intro p { font-family: Verdana, Geneva, Tahoma, sans-serif; }
+    .intro p{
+      max-width:760px;
+      color:var(--muted);
+      margin:0 auto 12px;
+    }
+
+    .intro .btn{
+      display:inline-block;
+      margin-top:22px;
+      padding:10px 18px;
+      border:2px solid var(--cyan);
+      border-radius:999px;
+      color:var(--cyan);
+      font-weight:700;
+      font-size:13px;
+    }
+
+    .intro-art{display:none}
+
+    /* WAVE SEPARATOR */
+    .wave{
+      height:120px;
+      background:var(--dark);
+      border-top-left-radius:120% 60px;
+      border-top-right-radius:120% 60px;
+    }
+
+    /* SECTION 2 – GAMES */
+    .games{
+      background:var(--dark);
+      padding:80px 60px 120px;
+    }
+
+    .game-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+      gap:36px;
+    }
+
+    .game{
+      color:#fff;
+    }
+
+    .game img{
+      width:100%;
+      display:block;
+      border-radius:8px;
+      margin-bottom:10px;
+    }
+
+    .game h3{
+      margin:0;
+      font-size:16px;
+    }
+
+    /* SECTION 3 – CONTACT */
+    .contact{
+      background:linear-gradient(180deg,#f7fafc 0%, #ffffff 100%);
+      padding:100px 24px 120px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+      /* subtle decorative pattern */
+      background-image:radial-gradient(circle at 10% 10%, rgba(0,0,0,0.02) 0, rgba(0,0,0,0.02) 1px, transparent 1px), radial-gradient(circle at 50% 80%, rgba(0,0,0,0.02) 0, rgba(0,0,0,0.02) 1px, transparent 1px);
+      background-size:140px 140px, 200px 200px;
+    }
+
+    .contact h2{
+      font-family:Luckiest Guy, Inter, system-ui, sans-serif;
+      font-size:98px;
+      line-height:0.9;
+      margin:0 auto 18px;
+      color:#111827;
+      text-transform:uppercase;
+      letter-spacing:0.02em;
+      max-width:760px;
+    }
+
+    .contact p{
+      max-width:640px;
+      margin:0 auto 18px;
+      color:var(--muted);
+      font-size:18px;
+      line-height:1.6;
+    }
+
+    .socials{display:flex;gap:13px;justify-content:center;margin:16px 0 14px}
+    .socials a{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:8px;background:#fff;box-shadow:0 8px 16px rgba(0,0,0,0.06);transition:transform .15s var(--ease)}
+    .socials a:hover{transform:translateY(-3px)}
+    .socials svg{width:28px;height:28px;display:block}
+    .socials a.youtube{background:#FF0033;color:#fff}
+    .socials a.x{background:#000;color:#fff}
+
+    .contact small{display:block;color:var(--muted);margin-top:14px}
+
+    .contact-art{display:none}
+
+    /* FOOTER */
+    footer{
+      background:var(--cyan);
+      color:#fff;
+      padding:28px 40px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:13px;
+    }
+
+    @media(max-width:900px){
+      .intro,.contact{grid-template-columns:1fr; padding:80px 24px}
+      .intro-art,.contact-art{display:none}
+      .contact h2{font-size:46px;line-height:0.95}
+      .contact p{font-size:15px}
+
+    }
+  </style>
+</head>
+<body>
+  <!-- Clouds: decorative animated clouds like index.html -->
+  <div class="cloud c1" style="animation-delay:0s;"></div>
+  <div class="cloud c2" style="animation-delay:8s;"></div>
+  <div class="cloud c3" style="animation-delay:14s;"></div>
+  <div class="cloud c2" style="animation-delay:22s; top:220px; transform: scale(.85);"></div>
+  <div class="cloud c1" style="animation-delay:4s; top:170px; transform: scale(1.05);"></div>
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="logo">CAPY</div>
+    <nav class="menu">
+      <a href="#">ABOUT</a>
+      <a href="#">GAMES</a>
+      <a href="#">CONTACT</a>
+    </nav>
+  </header>
+
+  <!-- SECTION 1 -->
+  <section class="intro">
+    <!-- Clouds: generated by scripts/clouds.js. Static copies are outside the intro -->
+    <div>
+      <h1>WELCOME TO<br>CAPY</h1>
+      <p>
+        Hi there, thanks for dropping by! We’re Capybara Games, an award‑winning independent video game studio based out of Toronto, Canada.
+      </p>
+      <a class="btn" href="#">READ MORE</a>
+    </div>
+    <div class="intro-art"></div>
+  </section>
+
+  <div class="wave"></div>
+
+  <!-- SECTION 2 -->
+  <section class="games">
+    <div class="game-grid">
+      <div class="game">
+        <img src="https://dummyimage.com/600x340/333/fff.png&text=Find+Your+Words" />
+        <h3>FIND YOUR WORDS</h3>
+      </div>
+      <div class="game">
+        <img src="https://dummyimage.com/600x340/333/fff.png&text=Battle+Vision" />
+        <h3>BATTLE VISION NETWORK</h3>
+      </div>
+      <div class="game">
+        <img src="https://dummyimage.com/600x340/333/fff.png&text=Grindstone" />
+        <h3>GRINDSTONE</h3>
+      </div>
+      <div class="game">
+        <img src="https://dummyimage.com/600x340/333/fff.png&text=Below" />
+        <h3>BELOW</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section class="contact">
+    <div>
+      <h2>SAY HI!</h2>
+      <p>
+        For press or partnerships: <a href="mailto:hello@capy.games">hello@capy.games</a>.
+      </p>
+      <div class="socials" aria-label="Social links">
+        <a class="x" href="https://x.com/home" target="_blank" rel="noopener noreferrer" aria-label="Visit X (Home)">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img">
+            <rect width="24" height="24" rx="6" fill="#000"></rect>
+            <path fill="#fff" d="M21.742 21.75l-7.563-11.179 7.056-8.321h-2.456l-5.691 6.714-4.54-6.714H2.359l7.29 10.776L2.25 21.75h2.456l6.035-7.118 4.818 7.118h6.191-.008zM7.739 3.818L18.81 20.182h-2.447L5.29 3.818h2.447z"/>
+          </svg>
+        </a>
+        <a class="youtube" href="https://youtube.com/yourchannel" target="_blank" rel="noopener noreferrer" aria-label="Subscribe on YouTube">
+          <svg viewBox="0 0 29 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img">
+            <path d="M14.4848 20C14.4848 20 23.5695 20 25.8229 19.4C27.0917 19.06 28.0459 18.08 28.3808 16.87C29 14.65 29 9.98 29 9.98C29 9.98 29 5.34 28.3808 3.14C28.0459 1.9 27.0917 0.94 25.8229 0.61C23.5695 0 14.4848 0 14.4848 0C14.4848 0 5.42037 0 3.17711 0.61C1.9286 0.94 0.954148 1.9 0.59888 3.14C0 5.34 0 9.98 0 9.98C0 9.98 0 14.65 0.59888 16.87C0.954148 18.08 1.9286 19.06 3.17711 19.4C5.42037 20 14.4848 20 14.4848 20Z" fill="#FF0033"></path>
+            <path d="M9 3 L22 10 L9 17 Z" fill="#fff"></path>
+          </svg>
+        </a>
+      </div> 
+      <small>No spam — occasional updates.</small>
+    </div>
+    <div class="contact-art"></div>
+  </section>
+
+  <footer>
+    <div>© 2009–2022 Capybara Games Inc.</div>
+    <div>ABOUT · GAMES · CONTACT</div>
+  </footer>
+
+  <script src="scripts/clouds.js"></script>
+  </body>
+</html>

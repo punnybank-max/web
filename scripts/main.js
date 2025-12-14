@@ -46,7 +46,7 @@
 (function(){
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     if(mq.matches){
-        document.querySelectorAll('.cloud, .pixelHorde, .cloud-emoji, .shotBox').forEach(el=>{
+        document.querySelectorAll('.cloud, .pixelHorde, .shotBox').forEach(el=>{
             el.style.animation = 'none';
             el.style.transition = 'none';
         });
