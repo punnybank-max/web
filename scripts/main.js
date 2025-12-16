@@ -160,3 +160,39 @@
 
     // spawnFire removed per user request (no fire VFX)
 })();
+
+/* -------------------------
+   Mobile menu + smooth anchors
+   ------------------------- */
+(function(){
+    const toggle = document.querySelector('.menu-toggle');
+    const topbar = document.querySelector('.topbar');
+    const nav = document.querySelector('.topbar nav');
+    if(!toggle || !topbar || !nav) return;
+
+    toggle.addEventListener('click', ()=>{
+        const open = topbar.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', String(open));
+    });
+
+    // Close mobile menu when a local link is clicked and smoothly scroll
+    nav.addEventListener('click', (e)=>{
+        const a = e.target.closest('a');
+        if(!a) return;
+        const href = a.getAttribute('href') || '';
+        if(href.startsWith('#')){
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+            topbar.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
+        }
+    });
+    // Close on outside click or Escape
+    document.addEventListener('click', (e)=>{
+        if(!topbar.classList.contains('open')) return;
+        if(e.target.closest('.topbar')) return;
+        topbar.classList.remove('open'); toggle.setAttribute('aria-expanded','false');
+    });
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape'){ topbar.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); } });
+})();

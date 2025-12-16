@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Retro / pixel fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <title>ToyPany Games – Independent Game Studio</title>
+
+<style>
+    :root{
+        --accent:#6cd06c;
+        --accent-dark:#4da84d;
+        --panel:#ffffffcc;
+        --text:#143b00;
+    }
+
+    /* make rem-based sizes a bit larger for a generally larger, more readable UI */
+    html { font-size: 18px; }
+    html,body{height:100%}
+    body {
+        margin: 0;
+        font-family: "Verdana", sans-serif;
+        background: linear-gradient(#7fd9ff 0%, #aef3ff 40%, #8ff87d 100%); /* single consistent background (v1) */
+        background-attachment: fixed; /* ensure one fixed background across the page */
+        overflow-x: hidden;
+        color: #222;
+        position: relative;
+    }
+
+    /* ─── Clouds: start offscreen left and drift across ───────────────── */
+    .cloud {
+        position: absolute;
+        left: -340px; /* start off-screen left so movement is visible */
+        width: 180px;
+        height: 60px;
+        background: #ffffff;
+        opacity: 0.92;
+        border-radius: 50px;
+        filter: blur(1px);
+        will-change: transform;
+        animation-name: cloudMove;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
+    .cloud::before,
+    .cloud::after {
+        content: "";
+        position: absolute;
+        background: #ffffff;
+        opacity: 0.92;
+        filter: blur(1px);
+        border-radius: 50px;
+    }
+    .cloud::before { width: 120px; height: 60px; top: -20px; left: 20px; }
+    .cloud::after  { width: 100px; height: 50px; top: 10px; left: 80px; }
+
+    @keyframes cloudMove {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(140vw); }
+    }
+
+    /* layer variants for depth */
+    .c1 { top: 60px; animation-duration: 48s; opacity: 0.95; transform: scale(1.05); }
+    .c2 { top: 120px; animation-duration: 72s; opacity: 0.85; transform: scale(0.9); }
+    .c3 { top: 30px; animation-duration: 36s; opacity: 0.9; transform: scale(1.15); }
+
+    /* ─── Tightened layout (closer spacing) ───────────────────────── */
+    .hero {
+        padding: 80px 18px 28px; /* reduced from v1 to bring things closer */
+        text-align: center;
+        position: relative;
+    }
+
+    .title {
+        font-size: 3.6rem;
+        font-weight: 700;
+        color: #083200; /* darker green for better contrast */
+        text-shadow: 4px 4px 0 #b2ffb2, 0 0 6px rgba(0,0,0,0.06);
+        margin: 0;
+        line-height: 1;
+        /* default to a retro pixel-ish font */
+        font-family: 'Press Start 2P', "Verdana", monospace;
+        letter-spacing: 0.04em;
+        -webkit-font-smoothing: none;
+        text-rendering: optimizeLegibility;
+    }
+
+    /* Split title styling so "Super" and "Horde" can be treated separately */
+    .title { display: inline-block; }
+
+    /* SUPER (red) */
+
+    /* HORDE (yellow) */
+    .title .super {
+        /* use same pixel font as Horde */
+        font-family: 'Press Start 2P', "Verdana", monospace;
+        /* balanced midtone red */
+        color: #ff2b2b;
+        font-size: 3.9rem;
+        font-weight: 800;
+        /* soft shadow for contrast without heavy glow */
+        text-shadow: 0 2px 0 rgba(150,20,20,0.85);
+        padding-right: 0.06rem;
+        display: inline-block;
+        position: relative;
+        margin-right: 0.01rem;
+        -webkit-text-stroke: 0.18px rgba(100,30,30,0.12);
+    }
+    @keyframes shaky {
+        0% { transform: translate(0,0) rotate(0deg); }
+        25% { transform: translate(-2px,1px) rotate(-0.5deg); }
+        50% { transform: translate(1px,-1px) rotate(0.4deg); }
+        75% { transform: translate(-1px,2px) rotate(-0.4deg); }
+        100% { transform: translate(0,0) rotate(0deg); }
+    }
+    .title.shaky { animation: shaky 0.14s steps(2, end) infinite; }
+
+    /* stronger transient shake used on hover or JS-triggered boosts */
+    .title.shaky-boost { animation: shaky 0.08s steps(2, end) 6; }
+
+    /* simple RGB-split glitch using pseudo-elements */
+    /* Glitch for Super (strong RGB split) */
+    .title .super.glitch { position: relative; }
+    .title .super.glitch::before,
+    .title .super.glitch::after {
+        content: attr(data-text);
+        position: absolute; left: 0; top: 0;
+        color: inherit;
+        pointer-events: none;
+        opacity: 0; /* hidden by default so base color shows */
+        visibility: hidden;
+        transform: translateX(0);
+        mix-blend-mode: normal;
+        clip-path: inset(0 0 0 0);
+        transition: opacity .08s linear, visibility .08s linear, transform .08s linear;
+    }
+    /* keep the RGB-split red-only (no cyan) so Super stays fully red */
+    .title .super.glitch::before { color: rgba(255,110,110,0.6); }
+    .title .super.glitch::after  { color: rgba(210,70,70,0.55); }
+
+    @keyframes glitch-anim {
+        0% { clip-path: inset(0 0 0 0); transform: translate(0,0); }
+        30% { clip-path: inset(10% 0 60% 0); transform: translate(-6px,2px); }
+        60% { clip-path: inset(60% 0 10% 0); transform: translate(4px,-2px); }
+        100% { clip-path: inset(0 0 0 0); transform: translate(0,0); }
+    }
+    /* active glitch burst (shorter so bursts look snappier & more frequent) */
+    .title .super.glitch.glitch-on::before,
+    .title .super.glitch.glitch-on::after {
+        opacity: 0.95; visibility: visible;
+        animation: glitch-anim 120ms steps(2) both;
+    }
+
+    /* pixel/scanline flicker overlay */
+    .title .horde.pixel {
+        /* balanced midtone yellow */
+        font-family: 'Press Start 2P', "Verdana", monospace;
+        color: #ffd24d; /* mid gold */
+        font-size: 3.9rem;
+        font-weight: 800;
+        text-shadow: 0 2px 0 rgba(150,110,0,0.7);
+        -webkit-text-stroke: 0.18px rgba(150,110,0,0.12);
+        display: inline-block;
+        animation: horde-flicker 1.8s steps(2, end) infinite;
+    }
+
+    /* Yellow glitch variant for Horde (keeps the style but yellow-toned) */
+    .title .horde.glitch { position: relative; }
+    .title .horde.glitch::before,
+    .title .horde.glitch::after {
+        content: attr(data-text);
+        position: absolute; left: 0; top: 0;
+        color: inherit;
+        pointer-events: none;
+        opacity: 0; /* hidden by default */
+        visibility: hidden;
+        transform: translateX(0);
+        mix-blend-mode: normal;
+        clip-path: inset(0 0 0 0);
+        transition: opacity .08s linear, visibility .08s linear, transform .08s linear;
+    }
+    .title .horde.glitch::before { color: rgba(255,215,110,0.6); }
+    .title .horde.glitch::after  { color: rgba(220,170,60,0.5); }
+    .title .horde.glitch.glitch-on::before,
+    .title .horde.glitch.glitch-on::after { opacity: 0.95; visibility: visible; animation: glitch-anim 120ms steps(2) both; }
+
+    @keyframes horde-flicker {
+        0% { opacity: 1; transform: translateY(0); }
+        10% { opacity: .85; transform: translateY(-1px); }
+        20% { opacity: 1; transform: translateY(0); }
+        60% { opacity: .95; }
+        100% { opacity: 1; }
+    }
+
+    /* short jitter used by horde on flicker bursts */
+    @keyframes horde-jitter {
+        0% { transform: translate(0,0); }
+        30% { transform: translate(2px,-2px); }
+        60% { transform: translate(-2px,2px); }
+        100% { transform: translate(0,0); }
+    }
+    /* temporary dramatic boost for Super */
+    .title .super.drama {
+        transform: translateY(-2px) scale(1.06);
+        filter: drop-shadow(0 8px 12px rgba(255,40,40,0.25));
+        transition: transform .12s ease, filter .12s ease;
+    }
+
+    /* Sparks (small particles emitted from Super) */
+    .spark {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        pointer-events: none;
+        mix-blend-mode: screen;
+        will-change: transform, opacity;
+        box-shadow: 0 0 8px rgba(255,160,0,0.9), 0 0 18px rgba(255,80,20,0.7);
+        background: radial-gradient(circle at 40% 30%, #ffd24d 0%, #ff8a00 35%, #ff2b2b 75%);
+        animation: spark-anim 700ms cubic-bezier(.2,.7,.15,1) forwards;
+    }
+
+    @keyframes spark-anim {
+        0% { transform: translate(0,0) scale(1); opacity: 1; }
+        60% { opacity: .8; }
+        100% { transform: translate(var(--dx, 20px), var(--dy, -40px)) scale(.4); opacity: 0; }
+    }
+    /* dark outline for Horde to improve contrast */
+    .title .horde.outline {
+        -webkit-text-stroke: 1px #442f00;
+        text-shadow: -1px -1px 0 #442f00, 1px -1px 0 #442f00, -1px 1px 0 #442f00, 1px 1px 0 #442f00;
+    }
+
+    /* Fire VFX removed (was replaced by sparks earlier). */
+    @keyframes title-flicker {
+        0% { opacity: 1; }
+        8% { opacity: .8; }
+        10% { opacity: 1; }
+        50% { opacity: 0.95; }
+        100% { opacity: 1; }
+    }
+
+    .studio {
+        font-size: 1.1rem;
+        margin-top: 6px;
+        color: #245600;
+        opacity: 0.85;
+    }
+
+    /* Topbar / Navigation */
+    .topbar{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:14px 22px;
+        position:sticky;
+        top:0;
+        z-index:40;
+        background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.65));
+        backdrop-filter: blur(6px);
+        border-bottom: 1px solid #e6ffe6;
+    }
+    .topbar .logo{font-weight:800;color:var(--accent-dark);font-family:'Orbitron',sans-serif;font-size:1.05rem}
+    .topbar nav{display:flex;gap:18px;align-items:center}
+    .topbar a{color:var(--text);font-weight:700;text-decoration:none;padding:8px 10px;border-radius:8px}
+    .topbar a:hover{background:rgba(255,255,255,0.7);transform:translateY(-2px)}
+    .menu-toggle{display:none;border:0;background:transparent}
+    .topbar.open nav{display:flex;flex-direction:column;gap:10px;position:absolute;left:12px;right:12px;top:62px;background:var(--panel);padding:12px;border-radius:10px;box-shadow:0 12px 30px rgba(10,40,10,0.08)}
+    .topbar.open .menu-toggle{transform:rotate(90deg)}
+
+    /* Follow buttons moved above (directly after titles) */
+    .socialRow {
+        display: inline-flex;
+        justify-content: center;
+        gap: 18px;
+        margin: 8px auto 12px;
+        flex-wrap: wrap;
+    }
+
+    .socialRow a {
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 14px;
+        background: var(--panel);
+        border-radius: 10px;
+        border: 2px solid #c8ffc8;
+        box-shadow: 0 3px 0 #74cc74;
+        color: #113200;
+        font-size: 0.98rem;
+        transition: transform .12s;
+    }
+
+    .socialRow a:hover { transform: translateY(-2px); }
+    .socialRow img, .socialRow svg { width: 28px; height: 28px; display:block; }
+
+    /* ─── Pixel "character" (kept smaller and closer) ───────────────── */
+    .pixelHorde {
+        width: 140px;
+        height: 140px;
+        margin: 18px auto 14px;
+        image-rendering: pixelated;
+        background: repeating-linear-gradient(
+            90deg,
+            #3b3b3b 0 10px,
+            #222 10px 20px
+        );
+        animation: hordeWalk 1s steps(4) infinite;
+        border-radius: 6px;
+    }
+    @keyframes hordeWalk {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(4px); }
+        100% { transform: translateY(0); }
+    }
+
+    @keyframes floatY {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        50% { transform: translateY(-10px) rotate(6deg); opacity: 0.95; }
+        100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    }
+
+    .desc {
+        max-width: 760px;
+        margin: 10px auto 18px;
+        font-size: 1.18rem;
+        line-height: 1.55;
+    }
+
+    .section {
+        padding: 30px 20px;
+        max-width: 920px;
+        margin: 0 auto;
+    }
+
+    h2 {
+        color: #1f4500;
+        font-size: 2rem;
+        margin: 8px 0 12px;
+        text-shadow: 2px 2px 0 #b0ffb0;
+    }
+
+    .card {
+        background: #ffffffaa;
+        backdrop-filter: blur(2px);
+        padding: 18px 20px;
+        margin: 14px 0;
+        border-radius: 12px;
+        border: 2px solid #c8ffc8;
+        box-shadow: 0 3px 0 #74cc74;
+        font-size: 1.06rem;
+        line-height: 1.45;
+    }
+
+    /* ─── Screenshots: grid style with left/right buttons and auto-preview ───────────────── */
+    .shots {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        margin-top: 6px; /* reduced top margin so shots sit closer to the hero */
+        position: relative;
+        align-items: center;
+    }
+
+    /* Games showcase */
+    .showcase{padding:40px 20px 18px;max-width:980px;margin:0 auto}
+    .games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+    .gameCard{background:linear-gradient(180deg,#fff,#fcfffc);border-radius:12px;padding:12px;border:1px solid #e6ffe6;box-shadow:0 6px 0 #d3f1d3}
+    .gameCard h3{margin:8px 0 4px;font-size:1rem;color:#083200}
+    .gameCard p{margin:0;color:#3b5a3b;font-size:0.95rem}
+
+    .shotBox {
+        background: repeating-linear-gradient(
+            45deg,
+            #d4ffd4 0 10px,
+            #b4ffb4 10px 20px
+        );
+        border: 2px solid #6cd06c;
+        border-radius: 12px;
+        height: 190px;
+        box-shadow: 0 3px 0 #4da84d;
+        transition: transform .22s ease, box-shadow .22s ease, border-color .22s;
+        background-size: cover;
+        background-position: center;
+    }
+
+    /* highlighted/previewed shot */
+    .shotBox.highlight {
+        transform: translateY(-6px) scale(1.03);
+        box-shadow: 0 10px 0 rgba(77,168,77,0.95);
+        border-color: #3cbf3c;
+    }
+
+    /* overlay arrow controls (left/right) */
+    .shots .arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.95);
+        border: 1px solid #c8ffc8;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        cursor:pointer;
+        box-shadow: 0 2px 0 var(--accent-dark);
+        z-index: 6;
+    }
+    .shots .arrow.left { left: -8px; }
+    .shots .arrow.right { right: -8px; }
+    .shots .arrow svg { width: 18px; height: 18px; color: #115000; }
+
+    /* Cloud emoji styles removed (no emoji elements generated) */
+
+    /* Footer */
+    .footer {
+        text-align: center;
+        padding: 30px;
+        font-size: 0.9rem;
+        opacity: 0.75;
+    }
+
+    /* reduced motion respects user preferences */
+    @media (prefers-reduced-motion: reduce) {
+        .cloud, .pixelHorde, .shotBox { animation: none !important; transition: none !important; }
+    }
+
+    @media (max-width:560px){
+        .title { font-size:2.2rem; }
+        .topbar nav{display:none}
+        .menu-toggle{display:block}
+        .shotBox{height:150px}
+    }
+</style>
+</head>
+
+
+<body>
+
+    <!-- Clouds: minor decorative elements (no emojis) -->
+
+    <!-- Clouds: layered with offsets and delays -->
+    <div class="cloud c1" style="animation-delay:0s;"></div>
+    <div class="cloud c2" style="animation-delay:8s;"></div>
+    <div class="cloud c3" style="animation-delay:14s;"></div>
+    <div class="cloud c2" style="animation-delay:22s; top:150px; transform: scale(.85);"></div>
+    <div class="cloud c1" style="animation-delay:4s; top:95px; transform: scale(1.05);"></div>
+
+    <!-- Topbar / Navigation -->
+    <header class="topbar" role="navigation" aria-label="Main">
+        <div class="logo">ToyPany Games</div>
+        <nav class="menu" aria-label="Primary">
+            <a href="#home">Home</a>
+            <a href="#showcase">Games</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </nav>
+        <button class="menu-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
+    </header>
+
+    <script src="scripts/clouds.js"></script>
+
+    <!-- Hero -->
+    <header class="hero" role="banner" id="home">
+        <div style="display:flex;flex-direction:column;align-items:center;">
+            <div class="title">
+                <span class="super glitch" data-text="ToyPany">ToyPany</span>
+                <span class="horde pixel outline glitch" data-text="Games">Games</span>
+            </div>
+            <div class="studio">Independent Game Studio</div>
+        </div>
+
+        <div class="socialRow" aria-label="Follow and wishlist links">
+            <a href="https://fake-steam.com/toypany" target="_blank" rel="noopener">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/Steam_icon_logo.svg" alt="Steam icon" />
+                Wishlist
+            </a>
+            <a class="youtube" href="https://youtube.com/toypany" target="_blank" rel="noopener">
+                <svg viewBox="0 0 29 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" role="img" style="width:28px;height:28px;vertical-align:middle;margin-right:10px;color:#FF0033;">
+                    <path d="M14.4848 20C14.4848 20 23.5695 20 25.8229 19.4C27.0917 19.06 28.0459 18.08 28.3808 16.87C29 14.65 29 9.98 29 9.98C29 9.98 29 5.34 28.3808 3.14C28.0459 1.9 27.0917 0.94 25.8229 0.61C23.5695 0 14.4848 0 14.4848 0C14.4848 0 5.42037 0 3.17711 0.61C1.9286 0.94 0.954148 1.9 0.59888 3.14C0 5.34 0 9.98 0 9.98C0 9.98 0 14.65 0.59888 16.87C0.954148 18.08 1.9286 19.06 3.17711 19.4C5.42037 20 14.4848 20 14.4848 20Z" fill="#FF0033"></path>
+                    <path d="M9 3 L22 10 L9 17 Z" fill="#fff"></path>
+                </svg>
+                YouTube
+            </a>
+            <a class="x" href="https://x.com/toypany" target="_blank" rel="noopener" aria-label="X (Twitter)">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" role="img" style="width:28px;height:28px;vertical-align:middle;margin-right:8px;">
+                    <rect width="24" height="24" rx="6" fill="#000"></rect>
+                    <path fill="#fff" d="M21.742 21.75l-7.563-11.179 7.056-8.321h-2.456l-5.691 6.714-4.54-6.714H2.359l7.29 10.776L2.25 21.75h2.456l6.035-7.118 4.818 7.118h6.191-.008zM7.739 3.818L18.81 20.182h-2.447L5.29 3.818h2.447z"/>
+                </svg>
+                X
+            </a>
+        </div>
+
+        <div class="pixelHorde" aria-hidden="true"></div>
+
+        <div class="desc">
+            We make playful, bold, and polished games — small teams, big ambition. Discover our
+            upcoming titles and join the adventure.
+        </div>
+    </header>
+
+    <!-- About -->
+    <main>
+    <!-- Showcase: games list + screenshot previews -->
+    <section class="section showcase" id="showcase" aria-labelledby="showcase-heading">
+        <h2 id="showcase-heading">Games Showcase</h2>
+        <div class="games-grid">
+            <div class="gameCard">
+                <img src="https://dummyimage.com/640x360/3b7a3b/fff.png&text=Super+Horde" alt="Super Horde screenshot" style="width:100%;border-radius:8px;margin-bottom:8px;" />
+                <h3>Super Horde</h3>
+                <p>A chaotic kingdom-builder rogue-like where armies grow and empires fall.</p>
+            </div>
+            <div class="gameCard">
+                <img src="https://dummyimage.com/640x360/3b3b7a/fff.png&text=Skybound+Keep" alt="Skybound Keep" style="width:100%;border-radius:8px;margin-bottom:8px;" />
+                <h3>Skybound Keep</h3>
+                <p>Defend floating isles with clever towers and heroic defenders.</p>
+            </div>
+            <div class="gameCard">
+                <img src="https://dummyimage.com/640x360/7a3b3b/fff.png&text=Foundry+Co." alt="Foundry Co." style="width:100%;border-radius:8px;margin-bottom:8px;" />
+                <h3>Foundry Co.</h3>
+                <p>A cozy resource-management sim about crafting, workers, and small triumphs.</p>
+            </div>
+            <div class="gameCard">
+                <img src="https://dummyimage.com/640x360/3b7a5a/fff.png&text=Phantom+Rogue" alt="Phantom Rogue" style="width:100%;border-radius:8px;margin-bottom:8px;" />
+                <h3>Phantom Rogue</h3>
+                <p>Stealth and shadows meet arcade pacing in this fast-action platformer.</p>
+            </div>
+        </div>
+
+        <h2 style="margin-top:22px;">Preview Screenshots</h2>
+        <div class="shots" id="shotsContainer">
+            <button class="arrow left" id="prevShot" aria-label="Previous screenshot" title="Previous">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 18l-6-6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+
+            <div class="shotBox" data-index="0" style="background-image: linear-gradient(180deg,#ffe7d4,#ffd4b4);"></div>
+            <div class="shotBox" data-index="1" style="background-image: linear-gradient(180deg,#e8f5ff,#cfe9ff);"></div>
+            <div class="shotBox" data-index="2" style="background-image: linear-gradient(180deg,#f7ffe8,#dcffcf);"></div>
+
+            <button class="arrow right" id="nextShot" aria-label="Next screenshot" title="Next">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 6l6 6-6 6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- About the studio -->
+    <section class="section" id="about" aria-labelledby="about-heading">
+        <h2 id="about-heading">About Us</h2>
+        <div class="card">
+            ToyPany Games is an independent studio focused on approachable strategy and
+            character-driven adventures. Founded by a small team of designers and artists,
+            we ship playful projects that invite curiosity and replayability.
+        </div>
+        <div class="card">
+            <strong>Studio Mission:</strong> Craft memorable moments with minimal friction —
+            vivid art, joyful systems, and tight mechanics.
+        </div>
+        <div class="card"><strong>Press / Partnerships:</strong> <a href="mailto:press@toypany.games">press@toypany.games</a></div>
+    </section>
+
+    <!-- Contact -->
+    <section class="section" id="contact" aria-labelledby="contact-heading">
+        <h2 id="contact-heading">Contact / Get in Touch</h2>
+        <div class="card">
+            For general inquiries: <a href="mailto:hello@toypany.games">hello@toypany.games</a>
+        </div>
+        <div class="card">Follow us on social channels for development updates and demos.</div>
+    </section>
+
+    <!-- Game Modes -->
+    <section class="section" aria-labelledby="modes-heading">
+        <h2 id="modes-heading">Game Modes</h2>
+        <div class="card"><strong>Campaign:</strong> A story-driven progression where your kingdom grows between chapters—recruit heroes, make lasting decisions, and face major scripted encounters that shape later runs.</div>
+        <div class="card"><strong>Skirmish vs AI:</strong> Quick, replayable matches against configurable AI opponents. Pick map size, difficulty, and victory conditions for fast tactical play.</div>
+        <div class="card"><strong>Kingdom Deck Builder:</strong> Construct a kingdom deck of units, buildings, and policies that defines your strategy each run—discover synergies and refine builds over time.</div>
+    </section>
+
+    <!-- Screenshots (original grid style, but with left/right buttons and auto-preview) -->
+    <!-- moved earlier inside <main> so previews appear closer to the hero -->
+
+
+    </main>
+
+    <footer class="footer">
+        © ToyPany Games • Made with clouds
+    </footer>
+
+<script src="scripts/main.js"></script>
+</body>
+</html>
